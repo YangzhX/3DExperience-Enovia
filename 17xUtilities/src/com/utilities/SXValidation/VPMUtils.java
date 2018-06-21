@@ -103,7 +103,7 @@ public class VPMUtils {
 		System.out.println("Inside getPhysicalProductDetails>>>");
 		System.out.println("Current getPhysicalProductDetails Method >>> "+new Timestamp((new Date()).getTime()));
 		
-		MapList mlPhyProdDetails = new MapList();
+//		MapList mlPhyProdDetails = new MapList();
 		
 		StringList slSelects = new StringList();
 		
@@ -159,31 +159,34 @@ public class VPMUtils {
 		slSelects.add("from[VPMRepInstance|to.type==\"Drawing\"].to.attribute[PLMReference.V_isLastMinorVersion].value");//for mastership Report
 		slSelects.add("from[VPMRepInstance|to.type==\"Drawing\"].to.attribute[PLMReference.V_isLastVersion].value");//for mastership Report
 
+
 		
 		try 
 		{
-			ContextUtil.pushContext(context);
 			//Write Log
+
 			
 //			mlPhyProdDetails = DomainObject.getInfo(context,new String [] {"60136.35780.37376.17810"}, slSelects);
 			
-			mlPhyProdDetails = DomainObject.findObjects(context, "VPMReference", "vplm", DomainConstants.EMPTY_STRING, slSelects);
+			MapList mlPhyProdDetails = DomainObject.findObjects(context, "VPMReference", "vplm", DomainConstants.EMPTY_STRING, slSelects);
+			
+			
+//			System.out.println("getPhysicalProductDetails ::: mlPhyProdDetails >>>"+mlPhyProdDetails);
+			
+//			String strResult  = MqlUtil.mqlCommand(context, "temp query bus VPMReference * * limit 10 select id");
 			
 			mlReturn.addAll(mlPhyProdDetails);
-			
-			ContextUtil.popContext(context);
-			
+		
 			//Start Processing data to write to Excel
-//			 processPPInfo.rearrangePPdata(mlPhyProdDetails);
-			
-			
+			//processPPInfo.rearrangePPdata(mlPhyProdDetails);
 			
 		} 
-		catch (FrameworkException e) 
+		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
-			
+		
+		
 		return mlReturn;
 	}
 	
@@ -228,6 +231,8 @@ public class VPMUtils {
 			ContextUtil.popContext(context);
 			mlReturn.addAll(mlThumbnailObjInfo);
 			
+			ContextUtil.popContext(context);
+			
 		}
 
 		catch(Exception ex)
@@ -238,8 +243,6 @@ public class VPMUtils {
 //		System.out.println("\nmlThumbnailObjInfo >>>"+mlThumbnailObjInfo);
 		
 		return mlReturn;
-		
-		
 	}
 	
 	public static MapList getDPInfoForGeneratingLinks(Context context, List<Map<?,?>> mlInput)throws Exception

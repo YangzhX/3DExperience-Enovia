@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/3DX_17X_Jars_OOTB_FD08"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ServletAPI"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache Log4J"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/3DX_17x_Jars_FD01_OOTB"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
