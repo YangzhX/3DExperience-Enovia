@@ -61,17 +61,8 @@ public class processPPInfo {
    			 
    			for(int mTempSize = 0; mTempSize < mTemp.size(); mTempSize++)
 			{
-   				/*iReorderedMapCounter = 0;
-   				iReorderedMapCounter = 0;
-   				iReorderedMapCounter = 0;*/
    				
    				iReorderedMapCounter = 0;
-   				
-//   			mlTempReordered = new MapList();
-   				
-   				mReorderedMap = new HashMap<Integer, String>();
-   				mReorderedMap = new HashMap<Integer, String>();
-   				mReorderedMap = new HashMap<Integer, String>();
    				
    				mReorderedMap = new HashMap<Integer, String>();
    				
@@ -127,8 +118,6 @@ public class processPPInfo {
 		   					iReorderedMapCounter++;
 		   					//******Put 3DShape info (except file info)  into rel3DShMap by fetching all the 1st index information -- End
 		   							   					
-		   					//******Process File Information -- Start
-		   					
 		   					//******Get indices of separator
 		   					
 		   					List<Integer> iIndiceslist = getIndices((String)mTemp.get("from[VPMRepInstance].to.format.file.name"), '');
@@ -142,6 +131,8 @@ public class processPPInfo {
 								mReorderedMap.put(iReorderedMapCounter, s3ShFiles.replaceAll("", "\r\n"));
 								iReorderedMapCounter++;
 								//******Put 3DShape File Information -- End
+								//******Process 3DShape File Information -- End
+								
 								//Put DWG information after putting the 3Dshape File Information -- Start
 			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.type"), "").get(1));
 			   					iReorderedMapCounter++;
@@ -168,30 +159,25 @@ public class processPPInfo {
 								mReorderedMap.put(iReorderedMapCounter, sDwgFiles.replaceAll("", "\r\n"));
 								iReorderedMapCounter++;
 								
-								//**Put 2 v6 Files separately -- start
-								/*slDwgFiles = FrameworkUtil.split(sDwgFiles, ""); //Split 2Files of Drawing
-								
-								mReorderedMap.put(iReorderedMapCounter, (String)slDwgFiles.get(0)); //Put 1st file in relDwgMap
-								iReorderedMapCounter++;
-								mReorderedMap.put(iReorderedMapCounter, ((String)slDwgFiles.get(1)).replaceAll("", ""));//Put 2nd file in relDwgMap
-								iReorderedMapCounter++;*/
-								//**Put 2 v6 Files separately -- end
 														
 								//******Process Drawing File Information -- End
-							}
+								//Put DWG information after putting the 3Dshape File Information -- End
+								
+							}// VPMReference has 3DShape + Drawing and 3DShape comes first in selectable + Both the Rep's files got converted successfully.
+		   					
 							else if(iIndiceslist.size() == 2)//1 Representation File got converted to v6 Format
 							{
-								//System.out.println("\nInside If 3DShape comes 1st in Selectable + 1Rep Passed and 1Rep Failed:::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
 								
 								s3ShFiles = ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).substring(0, (int)iIndiceslist.get(1)); //get 1st two files
-	//							//System.out.println("s3ShTemp3 >>>"+s3ShTemp3);
+
 								sl3ShFiles = FrameworkUtil.split(s3ShFiles, "");
 								
 								if(((String)sl3ShFiles.get(0)).contains("CATIA")) //3DShape Failed, Drawing Passed
 								{
-									//System.out.println("\nInside If 3DShape comes 1st in Selectable + 3DShape Failed and Drawing Passed:::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
-									mReorderedMap.put(iReorderedMapCounter, (String)sl3ShFiles.get(0)); //Put Failed 3sh File in rel3ShMap
+									//Put Failed 3sh File -- Start
+									mReorderedMap.put(iReorderedMapCounter, (String)sl3ShFiles.get(0));
 									iReorderedMapCounter++;
+									//Put Failed 3sh File -- End
 									
 									//Put DWG information after putting the 3Dshape File Information -- Start
 				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.type"), "").get(1));
@@ -213,36 +199,19 @@ public class processPPInfo {
 				   					//Put DWG information after putting the 3Dshape File Information -- End
 
 									
-									//Write DWG Files -- Start
+									//Put DWG Files -- Start
 									sDwgFiles = ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).substring((int)iIndiceslist.get(0)); //get 2Files of Drawing
-									mReorderedMap.put(iReorderedMapCounter, sDwgFiles.replace("", "\r\n")); //Put 1st file in relDwgMap
+									mReorderedMap.put(iReorderedMapCounter, sDwgFiles.replace("", "\r\n"));
 									iReorderedMapCounter++;
-									
-									
-									//**Put 2 v6 Files separately -- start
-									/*slDwgFiles = FrameworkUtil.split(sDwgFiles, "");
-									mReorderedMap.put(iReorderedMapCounter, (String)slDwgFiles.get(0)); //Put 1st file in relDwgMap
-									iReorderedMapCounter++;
-									mReorderedMap.put(iReorderedMapCounter, ((String)slDwgFiles.get(1)).replaceAll("", ""));//Put 2nd file in relDwgMap
-									iReorderedMapCounter++;*/
-									//**Put 2 v6 Files separately -- end
-									
-									//Write DWG Files -- End
+									//Put DWG Files -- End
 									
 								}
 								else //3DShape Pass, Drawing Failed
 								{
-									//System.out.println("\nInside If 3DShape comes 1st in Selectable + 3DShape Passed and Drawing Failed:::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
-									
+									//Put Passed 3sh File -- Start
 									mReorderedMap.put(iReorderedMapCounter, s3ShFiles.replaceAll("", "\r\n"));
 									iReorderedMapCounter++;
-									
-									//**Put 2 v6 Files separately -- Start
-									/*mReorderedMap.put(iReorderedMapCounter, (String)sl3ShFiles.get(0)); //Put 1st file in rel3shMap
-									iReorderedMapCounter++;
-									mReorderedMap.put(iReorderedMapCounter, ((String)sl3ShFiles.get(1)).replaceAll("", "")); //Put 2nd file in rel3ShMap
-									iReorderedMapCounter++;*/
-									//**Put 2 v6 Files separately -- end
+									//Put Passed 3sh File -- End
 									
 									//Put DWG information after putting the 3Dshape File Information -- Start
 				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.type"), "").get(1));
@@ -264,22 +233,21 @@ public class processPPInfo {
 				   					//Put DWG information after putting the 3Dshape File Information -- End
 
 									
-									//Write DWG File Info -- Start
+									//Put DWG File Info -- Start
 									sDwgFiles = ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).substring((int)iIndiceslist.get(1)); //get File of Drawing
-									mReorderedMap.put(iReorderedMapCounter, sDwgFiles.replaceAll("", "")); //Put Failed  Drawing File in relDwgMap
+									mReorderedMap.put(iReorderedMapCounter, sDwgFiles.replaceAll("", ""));
 									iReorderedMapCounter++;
-									
-									//Write DWG File Info -- End
+									//Put DWG File Info -- End
 								}
 							}
 							else if(iIndiceslist.size() == 1)//Both Representations Failed to convert
 							{
-								//System.out.println("\nInside If 3DShape comes 1st in Selectable + Both Reps Failed :::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
-	
+								//Put Failed 3sh File -- Start
 								sl3ShFiles = FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.format.file.name"), "");
 								
 								mReorderedMap.put(iReorderedMapCounter, (String)sl3ShFiles.get(0)); //Put failed 3Sh File in rel3ShMap
 								iReorderedMapCounter++;
+								//Put Failed 3sh File -- Start
 								
 								//Put DWG information after putting the 3Dshape File Information -- Start
 			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.type"), "").get(1));
@@ -300,12 +268,13 @@ public class processPPInfo {
 			   					iReorderedMapCounter++;
 			   					//Put DWG information after putting the 3Dshape File Information -- End
 
-								mReorderedMap.put(iReorderedMapCounter, (String)sl3ShFiles.get(1)); //Put failed Drawing File in relDwgMap
+			   					//Put DWG File Info -- Start
+								mReorderedMap.put(iReorderedMapCounter, (String)sl3ShFiles.get(1)); //Put failed Drawing File
 								iReorderedMapCounter++;
+								//Put DWG File Info -- End
 							}
 		   					
 		   					//*********************************************
-		   					//******Process File Information -- End
 						}
 		   				//******If 3DShape comes 1st in Selectable -- End ******//
 		   				
@@ -313,9 +282,7 @@ public class processPPInfo {
 		   				
 		   				if("Drawing".equalsIgnoreCase((String)slTemp.get(0)))
 		   				{
-		   					//System.out.println("\nInside If Drawing comes 1st in Selectable :::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
-		   					
-		   					//******Put 3DShape info (except file info) into rel3DShMap by fetching all the 2nd index information -- Start
+		   					//******Put 3DShape info (except file info) by fetching all the 2nd index information -- Start
 		   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.type"), "").get(1));
 		   					iReorderedMapCounter++;
 		   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.name"), "").get(1));
@@ -338,137 +305,168 @@ public class processPPInfo {
 		   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.attribute[PLMEntity.V_usage].value"), "").get(1));
 		   					iReorderedMapCounter++;
 		   					
-		   					//******Put 3DShape info (except file info) into rel3DShMap by fetching all the 2nd index information -- End
+		   					//******Put 3DShape info (except file info) by fetching all the 2nd index information -- End
 		   					
-		   					//******Put Drawing info (except file info) into relDwgMap by fetching all the 1st index information -- Start
-		   					
-		   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.type"), "").get(0));
-		   					iReorderedMapCounter++;
-		   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.name"), "").get(0));
-		   					iReorderedMapCounter++;
-		   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.revision"), "").get(0));
-		   					iReorderedMapCounter++;
-		   					
-		   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.attribute[PLMEntity.V_Name].value"), "").get(0));
-		   					iReorderedMapCounter++;
-		   					
-		   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.owner"), "").get(0));
-		   					iReorderedMapCounter++;
-	
-		   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.originated"), "").get(0));
-		   					iReorderedMapCounter++;
-		   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.modified"), "").get(0));
-		   					iReorderedMapCounter++;
-		   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.attribute[PLMEntity.V_usage].value"), "").get(0));
-		   					iReorderedMapCounter++;
-		   					
-		   					//******Put Drawing info (except file info) into relDwgMap by fetching all the 1st index information -- End
-		   					
-		   					
-	   						//******Process File Information -- Start
 		   					//******Get indices of separator
 		   					
-		   					List<?> iIndiceslist = getIndices((String)mTemp.get("from[VPMRepInstance].to.format.file.name"), '');
-		   					
-							if(iIndiceslist.size() == 3)//Both Representaions's Files got loaded to v6 Format
+		   					List<Integer> iIndiceslist = getIndices((String)mTemp.get("from[VPMRepInstance].to.format.file.name"), '');
+		   					//*******************
+		   					if(iIndiceslist.size() == 3)//Both Representaions's Files got loaded to v6 Format
 							{
-								//System.out.println("\nInside If Drawing comes 1st in Selectable ++ Both Representaions's Files got loaded to v6 Format :::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
+
+		   						//******Put 3DShape File Information -- Start
+		   						
+								s3ShFiles = ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).substring((int)iIndiceslist.get(1)); //get 2Files of 3DShape
+								mReorderedMap.put(iReorderedMapCounter, s3ShFiles.replaceAll("", "\r\n"));
+								iReorderedMapCounter++;
+								//******Put 3DShape File Information -- End
+								//******Process 3DShape File Information -- End
+								
+								//Put DWG information after putting the 3Dshape File Information -- Start
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.type"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.name"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.revision"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.attribute[PLMEntity.V_Name].value"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.owner"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.originated"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.modified"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.attribute[PLMEntity.V_usage].value"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					//Put DWG information after putting the 3Dshape File Information -- End
+								
+								//******Process Drawing File Information -- Start
 								
 								sDwgFiles = ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).substring(0, (int)iIndiceslist.get(1)); //get 2Files of Drawing
+								
 								mReorderedMap.put(iReorderedMapCounter, sDwgFiles.replaceAll("", "\r\n"));
 								iReorderedMapCounter++;
 								
-								//**Put 2 v6 Files separately -- start
-								/*slDwgFiles = FrameworkUtil.split(sDwgFiles, "");
-								
-								mReorderedMap.put(iReorderedMapCounter, (String)slDwgFiles.get(0)); //Put 1st file in relDwgMap
-								iReorderedMapCounter++;
-								mReorderedMap.put(iReorderedMapCounter, (String)slDwgFiles.get(1)).replaceAll("", ""); //Put 2nd file in relDwgMap
-								iReorderedMapCounter++;*/
-								//**Put 2 v6 Files separately -- end
-								
-								s3ShFiles = ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).substring((int)iIndiceslist.get(1)); //get 2Files of 3DShape
-								
-								mReorderedMap.put(iReorderedMapCounter, s3ShFiles.replaceAll("", "\r\n"));
-								iReorderedMapCounter++;
-								
-								//**Put 2 v6 Files separately -- start
-								/*sl3ShFiles = FrameworkUtil.split(s3ShFiles, "");
 														
-								mReorderedMap.put(iReorderedMapCounter, (String)sl3ShFiles.get(0)); //Put 1st file in rel3ShMap
-								iReorderedMapCounter++;
-								mReorderedMap.put(iReorderedMapCounter, ((String)sl3ShFiles.get(1)).replaceAll("", "")); //Put 2nd file in rel3ShMap
-								iReorderedMapCounter++;*/
-								//**Put 2 v6 Files separately -- end
-							}
+								//******Process Drawing File Information -- End
+								//Put DWG information after putting the 3Dshape File Information -- End
+								
+							}// VPMReference has 3DShape + Drawing and Drawing comes first in selectable + Both the Rep's files got converted successfully.
+
 							else if(iIndiceslist.size() == 2)//1 Representation File got converted to v6 Format
 							{
-								//System.out.println("\nInside If 3DShape comes 1st in Selectable + 1Rep Passed and 1Rep Failed:::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
-							
-								sDwgFiles = ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).substring(0, (int)iIndiceslist.get(1)); //get 2Files of Drawing
-								slDwgFiles = FrameworkUtil.split(sDwgFiles, "");
 								
-								if(((String)slDwgFiles.get(0)).contains("CATIA")) //Drawing Failed,3DShape Passed
+								s3ShFiles = ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).substring((int)iIndiceslist.get(0)); //get Last two files
+
+								sl3ShFiles = FrameworkUtil.split(s3ShFiles, "");
+								
+								if(((String)sl3ShFiles.get(1)).contains("CATIA")) //3DShape Failed, Drawing Passed
 								{
-									//System.out.println("\nInside If Drawing comes 1st in Selectable + Drawing Failed and 3DShape Passed:::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
-									mReorderedMap.put(iReorderedMapCounter, (String)slDwgFiles.get(0)); //Put failed Dwg file into relDwgMap
+									//Put Failed 3sh File -- Start
+									mReorderedMap.put(iReorderedMapCounter, (String)sl3ShFiles.get(1));
 									iReorderedMapCounter++;
-	
-									s3ShFiles = ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).substring((int)iIndiceslist.get(0)); //get 2Files of 3DShape
-									mReorderedMap.put(iReorderedMapCounter, s3ShFiles.replaceAll("", "\r\n")); //Put 2nd file in rel3ShMap
+									//Put Failed 3sh File -- End
+									
+									//Put DWG information after putting the 3Dshape File Information -- Start
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.type"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.name"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.revision"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.attribute[PLMEntity.V_Name].value"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.owner"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.originated"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.modified"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.attribute[PLMEntity.V_usage].value"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					//Put DWG information after putting the 3Dshape File Information -- End
+									
+									//Put DWG Files -- Start
+									sDwgFiles = ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).substring(0, (int)iIndiceslist.get(1)); //get 2Files of Drawing
+									mReorderedMap.put(iReorderedMapCounter, sDwgFiles.replace("", "\r\n"));
 									iReorderedMapCounter++;
-									
-									//**Put 2 v6 Files separately -- start
-									/*sl3ShFiles = FrameworkUtil.split(s3ShFiles, "");
-									
-									mReorderedMap.put(iReorderedMapCounter, (String)sl3ShFiles.get(0)); //Put 1st file in rel3ShMap
-									iReorderedMapCounter++;
-									
-									mReorderedMap.put(iReorderedMapCounter, ((String)sl3ShFiles.get(1)).replaceAll("", "")); //Put 2nd file in rel3ShMap
-									iReorderedMapCounter++;*/
-									//**Put 2 v6 Files separately -- end
+									//Put DWG Files -- End
 									
 								}
-								else //Drawing Pass, 3DShape Failed
+								else //3DShape Pass, Drawing Failed
 								{
-									//System.out.println("\nInside If Drawing comes 1st in Selectable + Drawing Passed and 3DShape Failed:::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
-									
-									mReorderedMap.put(iReorderedMapCounter, sDwgFiles.replaceAll("", "\r\n"));
+									//Put Passed 3sh File -- Start
+									mReorderedMap.put(iReorderedMapCounter, s3ShFiles.replaceAll("", "\r\n"));
 									iReorderedMapCounter++;
+									//Put Passed 3sh File -- End
 									
-									//**Put 2 v6 Files separately -- start
-									/*mReorderedMap.put(iReorderedMapCounter, (String)slDwgFiles.get(0)); //Put 1st Dwg file into relDwgMap
-									iReorderedMapCounter++;
-									mReorderedMap.put(iReorderedMapCounter, ((String)slDwgFiles.get(1)).replaceAll("", "")); //Put 2nd Dwg file into relDwgMap
-									iReorderedMapCounter++;*/
-									//**Put 2 v6 Files separately -- end
+									//Put DWG information after putting the 3Dshape File Information -- Start
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.type"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.name"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.revision"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.attribute[PLMEntity.V_Name].value"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.owner"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.originated"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.modified"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.attribute[PLMEntity.V_usage].value"), "").get(1));
+				   					iReorderedMapCounter++;
+				   					//Put DWG information after putting the 3Dshape File Information -- End
 									
-									s3ShFiles = ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).substring((int)iIndiceslist.get(1)); //get File of 3DShape
-									mReorderedMap.put(iReorderedMapCounter, s3ShFiles.replaceAll("", ""));
+									//Put DWG File Info -- Start
+									sDwgFiles = ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).substring(0, (int)iIndiceslist.get(0)); //get File of Drawing
+									mReorderedMap.put(iReorderedMapCounter, sDwgFiles.replaceAll("", ""));
 									iReorderedMapCounter++;
+									//Put DWG File Info -- End
 								}
 							}
-							else if(iIndiceslist.size() == 1)//Both Representations Failed
+		   					
+							else if(iIndiceslist.size() == 1)//Both Representations Failed to convert
 							{
-								//System.out.println("\nInside If Drawing comes 1st in Selectable + Both Reps Failed :::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
+								//Put Failed 3sh File -- Start
+								sl3ShFiles = FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.format.file.name"), "");
 								
-								slDwgFiles = FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.format.file.name"), "");
-								
-								mReorderedMap.put(iReorderedMapCounter, (String)slDwgFiles.get(0));//Put failed Drawing File in relDwgMap
+								mReorderedMap.put(iReorderedMapCounter, (String)sl3ShFiles.get(1)); //Put failed 3Sh File
 								iReorderedMapCounter++;
+								//Put Failed 3sh File -- Start
 								
-								mReorderedMap.put(iReorderedMapCounter, (String)slDwgFiles.get(1));//Put failed 3Sh File in rel3ShMap
+								//Put DWG information after putting the 3Dshape File Information -- Start
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.type"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.name"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.revision"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.attribute[PLMEntity.V_Name].value"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.owner"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.originated"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.modified"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					mReorderedMap.put(iReorderedMapCounter, (String)FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.attribute[PLMEntity.V_usage].value"), "").get(0));
+			   					iReorderedMapCounter++;
+			   					//Put DWG information after putting the 3Dshape File Information -- End
+
+			   					//Put DWG File Info -- Start
+								mReorderedMap.put(iReorderedMapCounter, (String)sl3ShFiles.get(0)); //Put failed Drawing File
 								iReorderedMapCounter++;
+								//Put DWG File Info -- End
 							}
-							//******Process File Information -- End
 		   				}
 		   				//******If Drawing comes 1st in Selectable -- End ******//
 		   			}
-   			
 		   			
 		   			if("3DShape".equalsIgnoreCase((String)mTemp.get("from[VPMRepInstance].to.type")))
 					{
-		   				//System.out.println("\nInside If 3DShape is the Only Representation :::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
 		   				
 		   				mReorderedMap.put(iReorderedMapCounter, (String)mTemp.get("from[VPMRepInstance].to.type"));
 		   				iReorderedMapCounter++;
@@ -489,35 +487,21 @@ public class processPPInfo {
 			   			
 			   			if(((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).contains(""))
 			   			{
-			   				//System.out.println("\nInside If 3DShape is the Only Representation + 3DShape Passed :::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
-			   				
-			   				
 			   				
 			   				mReorderedMap.put(iReorderedMapCounter, ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).replaceAll("", "\r\n"));
 			   				iReorderedMapCounter++;
 			   				
-			   				//**Put 2 v6 Files separately -- start
-			   				/*StringList slTemp = FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.format.file.name"), "");
-	   						mReorderedMap.put(iReorderedMapCounter, (String)slTemp.get(0));
-	   						iReorderedMapCounter++;
-			   				mReorderedMap.put(iReorderedMapCounter, (String)slTemp.get(1));
-			   				iReorderedMapCounter++;*/
-			   				//**Put 2 v6 Files separately -- end
 			   			}
 			   			else
 			   			{
-			   				//System.out.println("\nInside If 3DShape is the Only Representation + 3DShape Failed :::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
 			   				
 			   				mReorderedMap.put(iReorderedMapCounter, (String)mTemp.get("from[VPMRepInstance].to.format.file.name"));
-			   				//System.out.println("\nFailed 3DShape File name :: "+(String)mTemp.get("from[VPMRepInstance].to.format.file.name"));
 			   				iReorderedMapCounter++;
 			   			}
 					}
 		   			
 		   			 if("Drawing".equalsIgnoreCase((String)mTemp.get("from[VPMRepInstance].to.type")))
 		   			 {
-//		   				System.out.println("\nInside If Drawing is the Only Representation :::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
-		   				
 		   				if(iReorderedMapCounter == 9) //Adjusting counter to fill the Drawing information properly in excel - Case - PP has only Drawing but no 3DShape
 		   				{
 		   					mReorderedMap.put(iReorderedMapCounter, "");
@@ -558,38 +542,104 @@ public class processPPInfo {
 		   				
 			   			if(((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).contains(""))
 			   			{
-			   				//System.out.println("\nInside If Drawing is the Only Representation + Drawing Passed :::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
 			   				
 			   				mReorderedMap.put(iReorderedMapCounter, ((String)mTemp.get("from[VPMRepInstance].to.format.file.name")).replaceAll("", "\r\n"));
 			   				iReorderedMapCounter++;
 			   				
-			   				//**Put 2 v6 Files separately -- start
-			   				
-			   				/*StringList slTemp = FrameworkUtil.split((String)mTemp.get("from[VPMRepInstance].to.format.file.name"), "");
-			   				
-			   				mReorderedMap.put(iReorderedMapCounter, (String)slTemp.get(0));
-			   				iReorderedMapCounter++;
-			   				mReorderedMap.put(iReorderedMapCounter, (String)slTemp.get(1));
-			   				iReorderedMapCounter++;*/
-			   				//**Put 2 v6 Files separately -- end
 			   			}
 			   			else
 			   			{
-			   				//System.out.println("\nInside If Drawing is the Only Representation + Drawing Failed :::"+(String)mTemp.get("attribute[PLMEntity.V_Name].value"));
-			   				
 			   				mReorderedMap.put(iReorderedMapCounter, (String)mTemp.get("from[VPMRepInstance].to.format.file.name"));
 			   				iReorderedMapCounter++;
 			   			}
 		   			 }
 				}
-//	   			mlTempReordered.add(mReorderedMap);
-	   			
-	   			
-	   			/*mlTempReordered.add(mPPMap);
-	   			mlTempReordered.add(mRel3ShMap);
-	   			mlTempReordered.add(mRelDwgMap);*/
+	   			if(UIUtil.isNotNullAndNotEmpty((String)mTemp.get("from[VPMInstance].to.type")))
+				{
+	   				if(iReorderedMapCounter == 9) //Adjusting counter to fill the Child information properly in excel - Case - PP has no reps
+	   				{
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   					mReorderedMap.put(iReorderedMapCounter, "");
+	   					iReorderedMapCounter++;
+	   				}
+		   			if(((String)mTemp.get("from[VPMInstance].to.type")).contains(""))
+		   			{
+		   				mReorderedMap.put(iReorderedMapCounter, ((String)mTemp.get("from[VPMInstance].to.type")).replaceAll("", "\r\n"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, ((String)mTemp.get("from[VPMInstance].to.name")).replaceAll("", "\r\n"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, ((String)mTemp.get("from[VPMInstance].to.revision")).replaceAll("", "\r\n"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, ((String)mTemp.get("from[VPMInstance].to.attribute[PLMEntity.V_Name].value")).replaceAll("", "\r\n"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, ((String)mTemp.get("from[VPMInstance].to.attribute[PLMEntity.V_description].value")).replaceAll("", "\r\n"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, ((String)mTemp.get("from[VPMInstance].to.owner")).replaceAll("", "\r\n"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, ((String)mTemp.get("from[VPMInstance].to.originated")).replaceAll("", "\r\n"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, ((String)mTemp.get("from[VPMInstance].to.modified")).replaceAll("", "\r\n"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, ((String)mTemp.get("from[VPMInstance].to.attribute[PLMEntity.V_usage].value")).replaceAll("", "\r\n"));
+		   				iReorderedMapCounter++;
+		   			}
+		   			else
+		   			{
+		   				mReorderedMap.put(iReorderedMapCounter, (String)mTemp.get("from[VPMInstance].to.type"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, (String)mTemp.get("from[VPMInstance].to.name"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, (String)mTemp.get("from[VPMInstance].to.revision"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, (String)mTemp.get("from[VPMInstance].to.attribute[PLMEntity.V_Name].value"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, (String)mTemp.get("from[VPMInstance].to.attribute[PLMEntity.V_description].value"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, (String)mTemp.get("from[VPMInstance].to.owner"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, (String)mTemp.get("from[VPMInstance].to.originated"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, (String)mTemp.get("from[VPMInstance].to.modified"));
+		   				iReorderedMapCounter++;
+		   				mReorderedMap.put(iReorderedMapCounter, (String)mTemp.get("from[VPMInstance].to.attribute[PLMEntity.V_usage].value"));
+		   				iReorderedMapCounter++;
+		   			}
+				}
 			}
-//   			mReorderedMapList.add(mlTempReordered);
+//   		mReorderedMapList.add(mlTempReordered);
    			mReorderedMapList.add(mReorderedMap);
    		 }
 		//System.out.println("\nInput MapList  >>>"+mlInput);
@@ -605,7 +655,7 @@ public class processPPInfo {
 	private static List<Integer> getIndices(String input, char toBeFound)
     {
     	List<Integer> iRetList = new ArrayList<Integer>();
-       int[] retArray = new int[400] ;
+       int[] retArray = new int[input.length()] ;
         for (int i = 0 ; i<input.length() ; i++)
         {
 	        if (input.charAt(i) == toBeFound)

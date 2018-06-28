@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,12 @@ import com.utilities.dataProcessingUtils.processThumbnailInfo;
 import matrix.util.StringList;
 
 public class textFileToExcel {
+	
+	private static Date date = new Date(System.currentTimeMillis());
+	private static SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+	private static String strDate = formatter.format(date);
+
+	private static final String ReportDir = "C:\\Personal\\Work\\GE\\Series-X\\17x\\ValidationReports\\";
 
     public static void main(String[] args) throws Exception 
     {
@@ -116,7 +124,7 @@ public class textFileToExcel {
         CreationHelper createHelper = workbook.getCreationHelper();
 
         // Create a Sheet
-        Sheet sheet = workbook.createSheet("6-21-18");
+        Sheet sheet = workbook.createSheet(strDate);
 
         // Create a Font for styling header cells
         Font headerFont = workbook.createFont();
@@ -660,7 +668,7 @@ public class textFileToExcel {
         }
 
         // Write the output to a file
-        FileOutputStream fileOut = new FileOutputStream("SX-Validation-QA1-6-21-18.xlsx");
+        FileOutputStream fileOut = new FileOutputStream(ReportDir + "SX-Validation-Dev1-6-28-18.xlsx");
         workbook.write(fileOut);
         fileOut.close();
         System.out.println("CLOSE");
@@ -708,7 +716,7 @@ public class textFileToExcel {
         CreationHelper createHelper = workbook.getCreationHelper();
 
         // Create a Sheet
-        Sheet sheet = workbook.createSheet("6-21-18");
+        Sheet sheet = workbook.createSheet(strDate);
 
         // Create a Font for styling header cells
         Font headerFont = workbook.createFont();
@@ -924,7 +932,7 @@ public class textFileToExcel {
         }
 
         // Write the output to a file
-        FileOutputStream fileOut = new FileOutputStream("SX-Validation-DWG-QA1-6-21-18.xlsx");
+        FileOutputStream fileOut = new FileOutputStream(ReportDir + "SX-Validation-DWG-Dev1-6-28-18.xlsx");
         workbook.write(fileOut);
         fileOut.close();
         System.out.println("CLOSE");

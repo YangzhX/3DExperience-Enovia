@@ -19,8 +19,8 @@ public class Default
 		//Envs - Local, Dev1, Dev2, Qa1
 		try 
 		{
-			String EnvName = "Qa1";
-			context = connectToEnv.get17xNoCasContext("502785999", "502785999", "EngLeader", EnvName);
+			String EnvName = "Dev1";
+			context = connectToEnv.get17xNoCasContext("999901009", "", "EngAuthor", EnvName);
 
 			System.out.println("Context user >>"+context.getUser());
 			System.out.println("Current Time Main Method >>> "+new Timestamp((new Date()).getTime()));

@@ -56,8 +56,6 @@ public class processMastershipInfo {
 					mMastership.put(iCounter, (String)mTemp.get("attribute[PLMEntity.V_description].value"));
 					iCounter++;
 
-					
-					
 					sLastMinor = (String)mTemp.get("attribute[PLMReference.V_isLastMinorVersion].value");
 					mMastership.put(iCounter, sLastMinor);
 					iCounter++;
@@ -241,7 +239,7 @@ public class processMastershipInfo {
 							
 							if("Drawing".equalsIgnoreCase(sRepType))
 							{
-								if(iCounter == 7)
+								if(iCounter == 8)
 								{
 									mMastership.put(iCounter, "");
 									iCounter++;

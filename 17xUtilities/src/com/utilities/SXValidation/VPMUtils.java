@@ -19,6 +19,7 @@ import com.matrixone.apps.domain.util.MapList;
 import com.matrixone.apps.domain.util.MqlUtil;
 import com.matrixone.apps.framework.ui.UIUtil;
 import com.utilites.reportUtils.ListToExcel;
+import com.utilities.dataProcessingUtils.AssociativeDataProcessingUtils;
 import com.utilities.dataProcessingUtils.processMastershipInfo;
 import com.utilities.dataProcessingUtils.processPPInfo;
 import com.utilities.dataProcessingUtils.processPPandDPInfoForLinks;
@@ -35,6 +36,8 @@ public class VPMUtils {
 	private static SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 	private static String strDate = formatter.format(date);
 	
+	private static final String ReportDir = "C:\\Personal\\Work\\GE\\Series-X\\17x\\ValidationReports\\";
+	
 	private static String PPReportWorkBookName = "SX-Validation-Env-PPReport" + "-" + strDate;
 	private static String[] PPReportcolumns = {"Type", "Name", "Revision","Part Number", "Description", "Owner", "Originated","Modified","Usage","3Sh Type","3Sh Name","3Sh Revision","3Sh Part Number","3Sh Owner","3Sh Originated","3Sh Modified","3Sh Usage","3Sh File Info","Dwg Type","Dwg Name","Dwg Revision","Dwg Part Number","Dwg Owner","Dwg Originated","Dwg Modified","Dwg Usage","Dwg File Info"};
 	
@@ -50,7 +53,9 @@ public class VPMUtils {
 	private static String ReleasedObjsWorkBookaName = "SX-Validation-Env-ReleasedObjsReport" + "-" + strDate;
 	private static String[] ReleasedObjReportcolumns = {"Type", "Name", "Revision","State","Connected CA", "CA State", "Connected CO", "State", "Proposed / Realized"};
 
-	
+	private static String AssociativeDataWorkBookaName = "SX-Validation-Env-AssociativeDataReport" + "-" + strDate;
+	private static String[] AssociativeDataReportcolumns = {"Type", "Name", "Revision","Part Number", "Description", "Originated", "State","Knowledgeware Type", "Knowledgeware Name", "Knowledgeware Revision", "Knowledgeware Title", "Knowledgeware State","Markup Type", "Markup Name", "Markup Revision", "Markup Title", "Markup State"};
+
   	private static String SheetName = strDate;
 
 	
@@ -67,31 +72,39 @@ public class VPMUtils {
 		
 		MapList mlReleasedObjInfo = getReleasedObjInfo(context);
 		
+		MapList mlAssociativeObjInfo = getAssociativeDataInfo(context, mlPhyProdDetails);
+		
 		context.disconnect();
 		
 //		Process PP Info to generate Product/Part, 3DShape and Drawing Report
-		List<Map<?, ?>> mlReorderedList = processPPInfo.rearrangePPdata(mlPhyProdDetails);
+//		List<Map<?, ?>> mlReorderedList = processPPInfo.rearrangePPdata(mlPhyProdDetails);
 //		Generate PP Report		
-		ListToExcel.ListWithMapToExcel(PPReportWorkBookName.replaceAll("Env", EnvName), SheetName, "C:\\Personal\\Work\\GE\\Series-X\\17x\\ValidationReports\\", PPReportcolumns, mlReorderedList);
+//		ListToExcel.ListWithMapToExcel(PPReportWorkBookName.replaceAll("Env", EnvName), SheetName, ReportDir+EnvName+"\\", PPReportcolumns, mlReorderedList);
 		
 		
 //		Process PP & Thumbnail Info to generate Thumbnail Report
 		List<Map<?, ?>> mlThumbRearrangedData = processThumbnailInfo.rearrangeThumbnailData(mlPhyProdDetails, mlThumbnailsInfo);
 //		Generate Report
-		ListToExcel.ListWithMapToExcel(ThumbReportWorkBookName.replaceAll("Env",EnvName) , SheetName, "C:\\Personal\\Work\\GE\\Series-X\\17x\\ValidationReports\\", ThumbnailReportcolumns, mlThumbRearrangedData);
+		ListToExcel.ListWithMapToExcel(ThumbReportWorkBookName.replaceAll("Env",EnvName) , SheetName, ReportDir+EnvName+"\\", ThumbnailReportcolumns, mlThumbRearrangedData);
 		
 //		Process PP, 3Sh and DWG Info Info to generate MasterShip Report
 		List<Map<?, ?>> mlMastershipInfo = processMastershipInfo.processMasterShipInfo(mlPhyProdDetails);
 //		Generate Mastership Report
-		ListToExcel.ListWithMapToExcel(MastershipReportWorkBookaName.replaceAll("Env", EnvName), SheetName, "C:\\Personal\\Work\\GE\\Series-X\\17x\\ValidationReports\\", MastershipReportcolumns, mlMastershipInfo);
+		ListToExcel.ListWithMapToExcel(MastershipReportWorkBookaName.replaceAll("Env", EnvName), SheetName, ReportDir+EnvName+"\\", MastershipReportcolumns, mlMastershipInfo);
 		
 //		Process PP and DWG Info Info to generate Links Report
 		List<Map<?,?>> mlPPAndDPInfoForLinks = processPPandDPInfoForLinks.processInfoForLinks(mlPhyProdDetails, mlDPInfoForLinks, EnvName);
 //		Generate Links Report		
-		ListToExcel.ListWithMapToExcel(LinksReportWorkBookaName.replaceAll("Env", EnvName), SheetName, "C:\\Personal\\Work\\GE\\Series-X\\17x\\ValidationReports\\", LinksReportcolumns, mlPPAndDPInfoForLinks);
+		ListToExcel.ListWithMapToExcel(LinksReportWorkBookaName.replaceAll("Env", EnvName), SheetName, ReportDir+EnvName+"\\", LinksReportcolumns, mlPPAndDPInfoForLinks);
 	
 //		Generate Released Object Report		
-		ListToExcel.ListWithMapToExcel(ReleasedObjsWorkBookaName.replaceAll("Env", EnvName), SheetName, "C:\\Personal\\Work\\GE\\Series-X\\17x\\ValidationReports\\", ReleasedObjReportcolumns, mlReleasedObjInfo);
+		ListToExcel.ListWithMapToExcel(ReleasedObjsWorkBookaName.replaceAll("Env", EnvName), SheetName, ReportDir+EnvName+"\\", ReleasedObjReportcolumns, mlReleasedObjInfo);
+		
+//		Process PP and Associative Data Info
+		List<Map<?,?>> mlProcessedAssociativeObjInfo = AssociativeDataProcessingUtils.processPPandAssociativeData(mlPhyProdDetails, mlAssociativeObjInfo);
+//		Generate Links Report		
+		ListToExcel.ListWithMapToExcel(AssociativeDataWorkBookaName.replaceAll("Env", EnvName), SheetName, ReportDir+EnvName+"\\", AssociativeDataReportcolumns, mlProcessedAssociativeObjInfo);
+		
 
 	}
 	
@@ -128,7 +141,16 @@ public class VPMUtils {
 		slSelects.add("from[VPLMrel/PLMConnection/V_Owner|to.type==PLMDocConnection].to.type");//For Links Report
 		slSelects.add("from[VPLMrel/PLMConnection/V_Owner|to.type==PLMDocConnection].to.paths.path.attribute[LastPIDAndRole].value");//For Links Report
 		//----------------------------------------------------------------------------------------------------------------------
-			
+		slSelects.add("from[VPMInstance|to.type==\"VPMReference\"].to.type");  //Child PP Type
+		slSelects.add("from[VPMInstance|to.type==\"VPMReference\"].to.name");  //Child PP  Name
+		slSelects.add("from[VPMInstance|to.type==\"VPMReference\"].to.revision");  //Child PP  Revision
+		slSelects.add("from[VPMInstance|to.type==\"VPMReference\"].to.attribute[PLMEntity.V_Name].value");  //Child PP  Title
+		slSelects.add("from[VPMInstance|to.type==\"VPMReference\"].to.attribute[PLMEntity.V_description].value");  //Child PP  Description
+		slSelects.add("from[VPMInstance|to.type==\"VPMReference\"].to.owner");  //Child PP  Owner
+		slSelects.add("from[VPMInstance|to.type==\"VPMReference\"].to.originated");  //Child PP  Originated
+		slSelects.add("from[VPMInstance|to.type==\"VPMReference\"].to.modified");  //Child PP  Modified		
+		slSelects.add("from[VPMInstance|to.type==\"VPMReference\"].to.attribute[PLMEntity.V_usage].value"); //Child PP  Usage attr
+		//----------------------------------------------------------------------------------------------------------------------
 		slSelects.add("from[VPMRepInstance|to.type==\"3DShape\"].to.type");  //3DShape Type
 		slSelects.add("from[VPMRepInstance|to.type==\"3DShape\"].to.name");  //3DShape Name
 		slSelects.add("from[VPMRepInstance|to.type==\"3DShape\"].to.revision");  //3DShape Revision
@@ -142,8 +164,6 @@ public class VPMUtils {
 		slSelects.add("from[VPMRepInstance|to.type==\"3DShape\"].to.attribute[PLMReference.V_isLastMinorVersion].value");//for mastership Report
 		slSelects.add("from[VPMRepInstance|to.type==\"3DShape\"].to.attribute[PLMReference.V_isLastVersion].value");//for mastership Report
 		//----------------------------------------------------------------------------------------------------------------------
-		
-		
 		slSelects.add("from[VPMRepInstance|to.type==\"Drawing\"].to.type");  //Drawing Type
 		slSelects.add("from[VPMRepInstance|to.type==\"Drawing\"].to.name");  //Drawing Name
 		slSelects.add("from[VPMRepInstance|to.type==\"Drawing\"].to.revision");  //Drawing Revision
@@ -159,8 +179,6 @@ public class VPMUtils {
 		slSelects.add("from[VPMRepInstance|to.type==\"Drawing\"].to.attribute[PLMReference.V_isLastMinorVersion].value");//for mastership Report
 		slSelects.add("from[VPMRepInstance|to.type==\"Drawing\"].to.attribute[PLMReference.V_isLastVersion].value");//for mastership Report
 
-
-		
 		try 
 		{
 			//Write Log
@@ -402,4 +420,52 @@ public class VPMUtils {
 		return mlReturn;
 	}
 
+	public static MapList getAssociativeDataInfo(Context context, MapList mlPPDetails) throws Exception
+	{
+		MapList mlReturn = new MapList();
+		
+		Map mTemp = null;
+		
+		String strPPOIDs[] = null;
+
+		if(mlPPDetails != null && mlPPDetails.size() > 0)
+		{
+			strPPOIDs = new String[mlPPDetails.size()];
+			
+			for(int j = 0; j < mlPPDetails.size(); j++)
+			{
+				mTemp = (HashMap)mlPPDetails.get(j);
+				strPPOIDs[j] = (String)mTemp.get(DomainConstants.SELECT_ID);
+			}
+		}
+		
+		StringList slSelects = new StringList();
+		
+		slSelects.add(DomainConstants.SELECT_ID);
+		
+		slSelects.add("from[VPMRepInstance|to.type==\"Knowledgeware\"].to.type");
+		slSelects.add("from[VPMRepInstance|to.type==\"Knowledgeware\"].to.name");
+		slSelects.add("from[VPMRepInstance|to.type==\"Knowledgeware\"].to.revision");
+		slSelects.add("from[VPMRepInstance|to.type==\"Knowledgeware\"].to.attribute[PLMEntity.V_Name].value");
+		slSelects.add("from[VPMRepInstance|to.type==\"Knowledgeware\"].to.current");
+		
+		slSelects.add("from[VPMRepInstance|to.type==\"Review\"].to.type");
+		slSelects.add("from[VPMRepInstance|to.type==\"Review\"].to.name");
+		slSelects.add("from[VPMRepInstance|to.type==\"Review\"].to.revision");
+		slSelects.add("from[VPMRepInstance|to.type==\"Review\"].to.attribute[PLMEntity.V_Name].value");
+		slSelects.add("from[VPMRepInstance|to.type==\"Review\"].to.current");
+		
+		try
+		{
+			mlReturn = DomainObject.getInfo(context, strPPOIDs, slSelects);
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
+		System.out.println("Associative Data :: mlReturn >>>"+mlReturn);
+		
+		return mlReturn;
+	}
 }
