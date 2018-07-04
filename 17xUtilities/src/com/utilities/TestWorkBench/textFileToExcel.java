@@ -668,7 +668,7 @@ public class textFileToExcel {
         }
 
         // Write the output to a file
-        FileOutputStream fileOut = new FileOutputStream(ReportDir + "SX-Validation-Dev1-6-28-18.xlsx");
+        FileOutputStream fileOut = new FileOutputStream(ReportDir + "SX-Validation-Dev1"+strDate+".xlsx");
         workbook.write(fileOut);
         fileOut.close();
         System.out.println("CLOSE");
@@ -932,7 +932,7 @@ public class textFileToExcel {
         }
 
         // Write the output to a file
-        FileOutputStream fileOut = new FileOutputStream(ReportDir + "SX-Validation-DWG-Dev1-6-28-18.xlsx");
+        FileOutputStream fileOut = new FileOutputStream(ReportDir + "SX-Validation-DWG-Dev1"+strDate+".xlsx");
         workbook.write(fileOut);
         fileOut.close();
         System.out.println("CLOSE");
