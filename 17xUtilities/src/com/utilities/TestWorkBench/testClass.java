@@ -12,6 +12,8 @@ import matrix.util.StringList;
 
 import com.matrixone.apps.domain.*;
 import com.matrixone.apps.domain.util.*;
+import org.json.JSONObject;
+
 import java.util.Properties;
 import java.util.Date;
 
@@ -75,6 +77,9 @@ public class testClass
 	
 	public static void main(String args[]) throws Exception
 	{
+//		MapList mlTemp = new MapList();
+//		callWebService(mlTemp);
+		
 		testClass obj = new testClass();
 		
 		Context context = obj.get17xContext(User,Pass,Role,Dev1RMI);
@@ -94,9 +99,6 @@ public class testClass
 //			correctApplicativeData(context, "60136.35780.42752.41955");
 			
 			//String strResult = MqlUtil.mqlCommand(context, "print bus VPMReference obj_id-70003943 --A.1 select current.access");
-			
-			
-			
 		} 
 		
 		catch(Exception mx) 
@@ -118,7 +120,7 @@ public class testClass
 	{
 
 		MapList mlPPDetails = getPhyProdDetails(context);
-		MapList mlDWGDetails = getDWGInfo(context);
+//		MapList mlDWGDetails = getDWGInfo(context);
 		
 	}
 	
@@ -212,9 +214,12 @@ public class testClass
 		
 		try 
 		{
-			mlPhyProdDetails = DomainObject.findObjects(context, "VPMReference", "vplm", DomainConstants.EMPTY_STRING, slSelects);
+//			mlPhyProdDetails = DomainObject.findObjects(context, "VPMReference", "vplm", DomainConstants.EMPTY_STRING, slSelects);
+			
+			mlPhyProdDetails = DomainObject.findObjects(context, "VPMReference", "vplm", DomainConstants.EMPTY_STRING, slSelects, (short)10 , DomainConstants.EMPTY_STRINGLIST); 
 //			System.out.println("mlPhyProdDetails >>>:: "+mlPhyProdDetails);
-			textFileToExcel.writeToExcel(mlPhyProdDetails);
+//			callWebService(mlPhyProdDetails);
+//			textFileToExcel.writeToExcel(mlPhyProdDetails);
 			System.out.println("mlPhyProdDetails >>>:: Check Excel");
 			
 		} 
@@ -568,4 +573,44 @@ public class testClass
 	}
 
 
+	public static void callWebService(String sInput)throws Exception
+	{
+		StringBuilder sbOutput = new StringBuilder();
+		String testUrl = "http://localhost:8080/RSearch/services/hello/test";
+		String indexUrl = "http://localhost:8080/RSearch/services/index/data";
+		
+		String encodedURL=java.net.URLEncoder.encode(sInput,"UTF-8");
+		System.out.println(encodedURL);
+		
+		String params = "?data="+encodedURL;
+		
+		try
+		{
+			
+			URL url = new URL(indexUrl+params);
+			System.out.println("Updated URL >>> "+url);
+
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setRequestProperty("Accept", "text/plain");
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+			
+			String output = "";
+				
+			while ((output = br.readLine()) != null) 
+			{
+				sbOutput.append(output);
+					
+			}
+			System.out.println("WebService Response >>>"+sbOutput);
+			connection.disconnect();
+		}
+
+		catch(Exception ex)
+		{
+			ex.printStackTrace();
+		}
+
+	}
 }

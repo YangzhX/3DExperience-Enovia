@@ -5,5 +5,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/ServletAPI"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Apache Log4J"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/3DX_17x_Jars_FD01_OOTB"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Jackson"/>
+	<classpathentry kind="lib" path="C:/Personal/GitHub_Repositories/3DExperience-Enovia/17xUtilities/Dependencies/json-20180130.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

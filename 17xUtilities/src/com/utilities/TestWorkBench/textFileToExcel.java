@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.json.Json;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
@@ -22,15 +24,18 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.matrixone.apps.domain.DomainConstants;
 import com.matrixone.apps.domain.util.FrameworkUtil;
 import com.matrixone.apps.framework.ui.UIUtil;
+import org.json.JSONObject;
 import com.utilities.dataProcessingUtils.processThumbnailInfo;
 
 import matrix.util.StringList;
 
 public class textFileToExcel {
-	
+
 	private static Date date = new Date(System.currentTimeMillis());
 	private static SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 	private static String strDate = formatter.format(date);
@@ -39,15 +44,13 @@ public class textFileToExcel {
 
     public static void main(String[] args) throws Exception 
     {
-    	List<Map<?, ?>> mlInput = new ArrayList<Map<?, ?>>();
+    	List<Map> mlInput = new ArrayList<Map>();
     	List<Map<?, ?>> mlInput1 = new ArrayList<Map<?, ?>>();
     	
 
         try 
         {
-        	
-
-            File f = new File("C:\\Users\\502244529\\Documents\\SX Validation - RefactorTest.txt");
+            File f = new File("C:\\Users\\502244529\\Desktop\\new 4.txt");
 
             BufferedReader b = new BufferedReader(new FileReader(f));
 
@@ -73,7 +76,8 @@ public class textFileToExcel {
             	mlInput.add(mTemp);
             }
 
-            File f1 = new File("C:\\Users\\502244529\\Documents\\SX Validation - RefactorTest - ThumbnailDetails.txt");
+            System.out.println("mlInput >>"+mlInput);
+            /*File f1 = new File("C:\\Users\\502244529\\Documents\\SX Validation - RefactorTest - ThumbnailDetails.txt");
 
             BufferedReader b1 = new BufferedReader(new FileReader(f1));
 
@@ -97,8 +101,14 @@ public class textFileToExcel {
             		
             	}
             	mlInput1.add(mTemp1);
-            }
-            processThumbnailInfo.rearrangeThumbnailData(mlInput, mlInput1);
+            }*/
+            //processThumbnailInfo.rearrangeThumbnailData(mlInput, mlInput1);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.enable(SerializationFeature.INDENT_OUTPUT);
+            
+            String json = mapper.writeValueAsString(mlInput);
+            
+            testClass.callWebService(json);
         } 
         
         catch (IOException e) 
