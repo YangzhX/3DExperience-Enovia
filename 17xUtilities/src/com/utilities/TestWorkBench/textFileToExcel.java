@@ -46,7 +46,6 @@ public class textFileToExcel {
     {
     	List<Map> mlInput = new ArrayList<Map>();
     	List<Map<?, ?>> mlInput1 = new ArrayList<Map<?, ?>>();
-    	
 
         try 
         {

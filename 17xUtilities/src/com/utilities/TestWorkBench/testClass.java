@@ -579,7 +579,8 @@ public class testClass
 		String testUrl = "http://localhost:8080/RSearch/services/hello/test";
 		String indexUrl = "http://localhost:8080/RSearch/services/index/data";
 		
-		String encodedURL=java.net.URLEncoder.encode(sInput,"UTF-8");
+		String encodedURL = java.net.URLEncoder.encode(sInput,"UTF-8");
+		
 		System.out.println(encodedURL);
 		
 		String params = "?data="+encodedURL;
